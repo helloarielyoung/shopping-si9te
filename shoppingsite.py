@@ -7,13 +7,14 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken, Katie Byers.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session
 import jinja2
 
 import melons
 
 
 app = Flask(__name__)
+app.secret_key = "boo"
 
 # A secret key is needed to use Flask sessioning features
 
@@ -37,6 +38,8 @@ def index():
 @app.route("/melons")
 def list_melons():
     """Return page showing all the melons ubermelon has to offer"""
+
+    print session
 
     melon_list = melons.get_all()
     return render_template("all_melons.html",
@@ -99,8 +102,13 @@ def add_to_cart(melon_id):
     # - increment the count for that melon id by 1
     # - flash a success message
     # - redirect the user to the cart page
-
-    return "Oops! This needs to be implemented!"
+    # session["cart"] = session.get("cart", 0)[melon_id] + 1
+    session.setdefault("cart", {})
+    session["cart"][melon_id] = session["cart"].get(melon_id, 0) + 1
+    melon = melons.get_by_id(melon_id)
+    flash("Added %s to your cart!!" % (melon.common_name))
+    return redirect("/melons")
+    # return render_template("all_melons.html", melon_list=melon_list)
 
 
 @app.route("/login", methods=["GET"])
