@@ -3,7 +3,7 @@
 
 {% block body %}
 
-<!-- current_melon = (name, qty, price, total_price)
+{% if melon_objects %}
  -->    <table class="table table-striped">
         <thead>
         <tr>
@@ -27,7 +27,10 @@
     </table>
 
     <h3>Total: {{ total_cost }}</h3>
-
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
+
+{% else %}
+    <h2> Nothing in your cart!</h2>
+{% endif %}
 
 {% endblock %}
